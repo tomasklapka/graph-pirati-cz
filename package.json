@@ -1,0 +1,16 @@
+{
+  "name": "graph2",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "start": "node app"
+  },
+  "dependencies": {
+    "express": "3.0.0",
+    "jade": "0.27.7",
+	"mysql": "0.9.6",
+	"mysql-pool": "*",
+	"oauth2-provider": "1.2",
+	"forever-monitor": "*"
+  }
+}
