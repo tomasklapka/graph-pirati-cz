@@ -123,7 +123,6 @@ function phpbbGroupFinalizer(r) {
 function phpbbUserFinalizer(r) {
 	var uid = "" + r.user_id;
 	r.id = 'deadbeef-babe-f001-' + uid.lpad("0", 12);
-	delete r.user_id;
 	if (r.rank == 'member') {
 		r.email = r.username_clean.replace(' ', '.') + "@pirati.cz";
 	} else {
