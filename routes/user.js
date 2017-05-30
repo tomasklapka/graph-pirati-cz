@@ -4,11 +4,11 @@ exports.list = function(req, res) {
 	User.list(function(err, result) {
 		if (err) {
 			console.log(err);
-			res.send(500, "backend error");
+			res.status(500).send("backend error");
 			return;
 		}
 		if (!result) {
-			res.send(404, "no such user");
+			res.status(404).send("no such user");
 			return;
 		}
 		res.json(result);
@@ -21,11 +21,11 @@ exports.getGroupsById = function(req, res) {
 	User.getGroups(req.params.id || req.params[0], function(err, result) {
 		if (err) {
 			console.log(err);
-			res.send(500, "backend error");
+			res.status(500).send("backend error");
 			return;
 		}
 		if (!result) {
-			res.send(404, "no such user");
+			res.status(404).send("no such user");
 			return;
 		}
 		res.json(result);
@@ -37,11 +37,11 @@ exports.get = function(req, res) {
 	User.getByName(req.params.id, function(err, result) {
 		if (err) {
 			console.log(err);
-			res.send(500, "backend error");
+			res.status(500).send("backend error");
 			return;
 		}
 		if (!result) {
-			res.send(404, "no such user");
+			res.status(404).send("no such user");
 			return;
 		}
 		res.json(result);
@@ -53,11 +53,11 @@ exports.getGroups = function(req, res) {
 	User.getByName(req.params.id, function(err, result) {
 		if (err) {
 			console.log(err);
-			res.send(500, "backend error");
+			res.status(500).send("backend error");
 			return;
 		}
 		if (!result) {
-			res.send(404, "no such user");
+			res.status(404).send("no such user");
 			return;
 		}
 		User.getGroups(result.id, function(err, result) {
@@ -73,11 +73,11 @@ exports.getById = function(req, res, next) {
 		User.getById(req.params.id || req.params[0], function(err, result) {
 			if (err) {
 				console.log(err);
-				res.send(500, "backend error");
+				res.status(500).send("backend error");
 				return;
 			}
 			if (!result) {
-				res.send(404, "no such user");
+				res.status(404).send("no such user");
 				
 				return;
 			}

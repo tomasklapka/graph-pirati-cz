@@ -6,11 +6,12 @@
     "start": "node app"
   },
   "dependencies": {
-    "express": "3.0.0",
-    "jade": "0.27.7",
-	"mysql": "0.9.6",
-	"mysql-pool": "*",
-	"oauth2-provider": "1.2",
-	"forever-monitor": "*"
+    "express": "^4.15.3",
+    "forever-monitor": "^1.7.1",
+    "morgan": "^1.8.2",
+    "mysql": "^0.9.6",
+    "mysql-pool": "*",
+    "pug": "^2.0.0-rc.1",
+    "serve-favicon": "^2.4.3"
   }
 }

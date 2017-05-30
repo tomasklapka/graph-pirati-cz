@@ -11,27 +11,21 @@ var express = require('express')
   , routes = require('./routes')
   , user = require('./routes/user')
   , group = require('./routes/group')
-  , http = require('http')
   , path = require('path');
+var favicon = require('serve-favicon');
+var logger = require('morgan');
+
 
 var app = express();
 
-app.configure(function(){
   app.set('port', process.env.PORT || 3042);
   app.set('views', __dirname + '/views');
-  app.set('view engine', 'jade');
+  app.set('view engine', 'pug');
   app.enable('trust proxy');
-  app.use(express.favicon());
-  app.use(express.logger('dev'));
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(app.router);
+  app.use(favicon(path.join(__dirname, 'public/favicon.ico')));
+  app.use(logger('dev'));
+  app.set('json spaces', 2);
   app.use(express.static(path.join(__dirname, 'public')));
-});
-
-app.configure('development', function(){
-  app.use(express.errorHandler());
-});
 
 app.get('/', routes.index);
 app.get('/users', user.list);
@@ -46,6 +40,6 @@ app.get('/group/:name/members', group.getMembersByName);
 app.get(/^\/(deadbeef-babe-f002-\d{12})$/, group.getById);
 app.get(/^\/(deadbeef-babe-f002-\d{12})\/members$/, group.getMembersById);
 
-http.createServer(app).listen(app.get('port'), function(){
+app.listen(app.get('port'), function(){
   console.log("Express server listening on port " + app.get('port'));
 });
