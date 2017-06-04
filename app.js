@@ -14,7 +14,7 @@ var express = require('express')
   , path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
-
+var bodyParser = require('body-parser');
 
 var app = express();
 
@@ -26,6 +26,7 @@ var app = express();
   app.use(logger('dev'));
   app.set('json spaces', 2);
   app.use(express.static(path.join(__dirname, 'public')));
+  app.use(bodyParser.json())
 
 app.get('/', routes.index);
 app.get('/users', user.list);
