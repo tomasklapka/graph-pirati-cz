@@ -10,8 +10,7 @@
     "express": "^4.15.3",
     "forever-monitor": "^1.7.1",
     "morgan": "^1.8.2",
-    "mysql": "^0.9.6",
-    "mysql-pool": "*",
+    "mysql": "^2",
     "pug": "=2.0.0-rc.1",
     "serve-favicon": "^2.4.3"
   }
