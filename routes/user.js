@@ -1,4 +1,6 @@
-var User = require('../control/user');
+const debug = require('debug')('group');
+
+var User = require('../control/graphapi_user');
 
 exports.list = function(req, res) {
 	User.list(function(err, result) {
@@ -18,7 +20,7 @@ exports.list = function(req, res) {
 }
 
 exports.getGroupsById = function(req, res) {
-	User.getGroups(req.params.id || req.params[0], function(err, result) {
+    User.getGroups(req.params.id || req.params[0], function(err, result) {
 		if (err) {
 			console.log(err);
 			res.status(500).send("backend error");
@@ -50,7 +52,7 @@ exports.get = function(req, res) {
 };
 
 exports.getGroups = function(req, res) {
-	User.getByName(req.params.id, function(err, result) {
+	User.getGroups(req.params.id, function(err, result) {
 		if (err) {
 			console.log(err);
 			res.status(500).send("backend error");
@@ -60,11 +62,8 @@ exports.getGroups = function(req, res) {
 			res.status(404).send("no such user");
 			return;
 		}
-		User.getGroups(result.id, function(err, result) {
-			console.log(err);
-			res.json(result);
-		});
-		return;
+        res.json(result);
+        return;
 	});
 };
 

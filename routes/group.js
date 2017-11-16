@@ -1,4 +1,6 @@
-var Group = require('../control/group');
+const debug = require('debug')('group');
+
+var Group = require('../control/graphapi_group');
 
 exports.list = function(req, res) {
 	Group.list(function(err, result) {
