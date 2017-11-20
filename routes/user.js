@@ -1,88 +1,51 @@
-const debug = require('debug')('group');
+"use strict";
 
-var User = require('../control/graphapi_user');
+const getResultCallback = require('./common').getResultCallback;
+const commonFallThrough = require('./common').fallThrough;
 
-exports.list = function(req, res) {
-	User.list(function(err, result) {
-		if (err) {
-			console.log(err);
-			res.status(500).send("backend error");
-			return;
-		}
-		if (!result) {
-			res.status(404).send("no such user");
-			return;
-		}
-		res.json(result);
-		return;
-	});
-
+function fallThrough (req, resultCallback, controlCallback) {
+    commonFallThrough('user', req, resultCallback, controlCallback);
 }
 
-exports.getGroupsById = function(req, res) {
-    User.getGroups(req.params.id || req.params[0], function(err, result) {
-		if (err) {
-			console.log(err);
-			res.status(500).send("backend error");
-			return;
-		}
-		if (!result) {
-			res.status(404).send("no such user");
-			return;
-		}
-		res.json(result);
-		return;
-	});
+module.exports.list = function (req, res) {
+    fallThrough(req, getResultCallback(res), function (control, cb) {
+        control.list(cb);
+    });
 };
 
-exports.get = function(req, res) {
-	User.getByName(req.params.id, function(err, result) {
-		if (err) {
-			console.log(err);
-			res.status(500).send("backend error");
-			return;
-		}
-		if (!result) {
-			res.status(404).send("no such user");
-			return;
-		}
-		res.json(result);
-		return;
-	});
+module.exports.getGroupsById = function (req, res) {
+    fallThrough(req, getResultCallback(res), function (control, cb) {
+        control.getGroups(req.params.id || req.params[0], cb);
+    });
 };
 
-exports.getGroups = function(req, res) {
-	User.getGroups(req.params.id, function(err, result) {
-		if (err) {
-			console.log(err);
-			res.status(500).send("backend error");
-			return;
-		}
-		if (!result) {
-			res.status(404).send("no such user");
-			return;
-		}
-        res.json(result);
-        return;
-	});
+module.exports.get = function (req, res) {
+    fallThrough(req, getResultCallback(res), function (control, cb) {
+        control.getByName(req.params.id, cb);
+    });
 };
 
-exports.getById = function(req, res, next) {
-	if (/deadbeef-babe-f001-(\d{12})/.exec(req.params.id || req.params[0])) {
-		User.getById(req.params.id || req.params[0], function(err, result) {
-			if (err) {
-				console.log(err);
-				res.status(500).send("backend error");
-				return;
-			}
-			if (!result) {
-				res.status(404).send("no such user");
-				
-				return;
-			}
-			res.json(result);
-			return;
-		});
-		return;
-	}	
+module.exports.getGroups = function (req, res) {
+    if (/deadbeef-babe-f001-(\d{12})/.exec(req.params.id || req.params[0])) {
+        fallThrough(req, getResultCallback(res), function (control, cb) {
+            control.getGroups(req.params.id, cb);
+        });
+    } else {
+        fallThrough(req, getResultCallback(res, (res, err, result) => {
+            fallThrough(req, getResultCallback(res), function (control, cb) {
+                control.getGroups(result.id, cb);
+            });
+        }), function (control, cb) {
+            control.getByName(req.params.id, cb);
+        });
+    }
 };
+
+module.exports.getById = function (req, res) {
+    if (/deadbeef-babe-f001-(\d{12})/.exec(req.params.id || req.params[0])) {
+        fallThrough(req, getResultCallback(res), function (control, cb) {
+            control.getById(req.params.id || req.params[0], cb);
+        });
+    }
+};
+

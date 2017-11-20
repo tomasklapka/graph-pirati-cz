@@ -1,15 +1,16 @@
 {
-  "name": "graph-livemirror",
+  "name": "graph-pirati-cz",
   "version": "0.0.1",
-  "private": true,
   "scripts": {
     "start": "node app"
   },
   "dependencies": {
+    "async": "^2.6.0",
     "body-parser": "^1.17.2",
     "express": "^4.15.3",
     "forever-monitor": "^1.7.1",
     "morgan": "^1.8.2",
+    "mysql": "^2.15.0",
     "pug": "^2.0.0-rc.2",
     "request": "^2.83.0",
     "serve-favicon": "^2.4.3"

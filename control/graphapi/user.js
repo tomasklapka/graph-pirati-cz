@@ -1,6 +1,6 @@
 const debug = require('debug')('graphapi_user');
 
-const graphapi = require('../control/graphapi.js');
+const graphapi = require('./graphapi.js');
 
 const User = {};
 

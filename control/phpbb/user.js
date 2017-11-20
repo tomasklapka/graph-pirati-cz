@@ -1,4 +1,4 @@
-var phpbb = require('../control/phpbb.js'); 
+var phpbb = require('./phpbb.js');
 
 var User = {};
 
@@ -20,7 +20,7 @@ User.getByName = function(name, callback) {
 			WHERE username_clean = LOWER(?)  ORDER BY grps.group_name"
 			, [name], function(err, result) {
 				if (err || !result[0]) {
-					callback(err, result[0]);
+					callback(err, undefined);
 					return;
 				}
 				callback(err, phpbbUserFinalizer(result[0]));

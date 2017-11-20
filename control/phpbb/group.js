@@ -1,4 +1,4 @@
-var phpbb = require('../control/phpbb.js'); 
+var phpbb = require('./phpbb.js');
 
 var Group = {};
 
@@ -6,7 +6,7 @@ Group.getByName = function(name, callback) {
 	phpbb.query("SELECT * FROM phpbb_groups WHERE group_name = ?"
 			, [name], function(err, result) {
 				if (err || !result[0]) {
-					callback(err, result[0]);
+					callback(err, undefined);
 					return;
 				}
 				callback(err, phpbbGroupFinalizer(result[0]));

@@ -1,6 +1,6 @@
 const debug = require('debug')('graphapi_group');
 
-const graphapi = require('../control/graphapi.js');
+const graphapi = require('./graphapi.js');
 
 const Group = {};
 
@@ -23,7 +23,7 @@ Group.getMembers = function(id, callback) {
 
 Group.list = function(callback) {
     graphapi.query('groups', callback)
-}
+};
 
 exports.Group = Group;
 exports.getByName = Group.getByName;

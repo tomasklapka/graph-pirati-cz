@@ -1,32 +1,33 @@
-
-String.prototype.lpad = function(padString, length) {
+String.prototype.lpad = function (padString, length) {
     var str = this;
     while (str.length < length)
         str = padString + str;
     return str;
-}
+};
 
+const sources = ['phpbb', 'graphapi'];  // 'cache'
 
-var express = require('express')
-  , routes = require('./routes')
-  , user = require('./routes/user')
-  , group = require('./routes/group')
-  , path = require('path');
-var favicon = require('serve-favicon');
-var logger = require('morgan');
-var bodyParser = require('body-parser');
+const express = require('express'),
+    routes = require('./routes'),
+    user = require('./routes/user'),
+    group = require('./routes/group'),
+    path = require('path'),
+    favicon = require('serve-favicon'),
+    logger = require('morgan'),
+    bodyParser = require('body-parser');
 
-var app = express();
+const app = express();
 
-  app.set('port', process.env.PORT || 3042);
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'pug');
-  app.enable('trust proxy');
-  app.use(favicon(path.join(__dirname, 'public/favicon.ico')));
-  app.use(logger('dev'));
-  app.set('json spaces', 2);
-  app.use(express.static(path.join(__dirname, 'public')));
-  app.use(bodyParser.json())
+app.set('sources', sources);
+app.set('port', process.env.PORT || 3042);
+app.set('views', __dirname + '/views');
+app.set('view engine', 'pug');
+app.enable('trust proxy');
+app.use(favicon(path.join(__dirname, 'public/favicon.ico')));
+app.use(logger('dev'));
+app.set('json spaces', 2);
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.json())
 
 app.get('/', routes.index);
 app.get('/users', user.list);
@@ -41,6 +42,6 @@ app.get('/group/:name/members', group.getMembersByName);
 app.get(/^\/(deadbeef-babe-f002-\d{12})$/, group.getById);
 app.get(/^\/(deadbeef-babe-f002-\d{12})\/members$/, group.getMembersById);
 
-app.listen(app.get('port'), function(){
+app.listen(app.get('port'), function () {
   console.log("Express server listening on port " + app.get('port'));
 });
