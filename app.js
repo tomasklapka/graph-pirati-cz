@@ -5,7 +5,10 @@ String.prototype.lpad = function (padString, length) {
     return str;
 };
 
-const sources = ['phpbb', 'graphapi'];  // 'cache'
+// official server
+//const sources = ['phpbb', 'cache'];
+// live mirror server
+const sources = ['graphapi', 'cache'];
 
 const express = require('express'),
     routes = require('./routes'),

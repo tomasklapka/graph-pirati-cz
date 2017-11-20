@@ -1,6 +1,7 @@
 "use strict";
 
 const debug = require('debug')('routes/common');
+const cacheRequest = require('../control/cache/cache').cacheRequest;
 const tryEach = require('async/tryEach');
 
 const controls = {
@@ -25,7 +26,7 @@ module.exports.fallThrough = function (collection, req, resultCallback, controlC
     tryEach(tasks, resultCallback);
 };
 
-module.exports.getResultCallback = function (res, next) {
+module.exports.getResultCallback = function (collection, method, parameter, res, next) {
     return function (err, result) {
         debug('result callback err: ' + err);
         if (err) {
@@ -37,10 +38,12 @@ module.exports.getResultCallback = function (res, next) {
             res.status(404).send("no such user");
             return;
         }
-        if (next) {
-            next(res, err, result);
-        } else {
-            res.json(result);
-        }
+        cacheRequest(collection, method, parameter, result, () => {
+            if (next) {
+                next(res, err, result);
+            } else {
+                res.json(result);
+            }
+        });
     }
 };
