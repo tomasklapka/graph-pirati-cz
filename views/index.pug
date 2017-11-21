@@ -5,29 +5,29 @@ block content
   p Welcome to #{title}. This website provides access to social graph.
   
   p Every object in the social graph has a unique ID. You can access the properties of an object by requesting 
-    code http://graph.pirati.cz/ID
+    code #{base}/ID
 
   p To list users use 
-    code http://graph.pirati.cz/users
+    code #{base}/users
 
   p To list groups use 
-    code http://graph.pirati.cz/groups
+    code #{base}/groups
 
   p You can search for users and/or groups by using these urls:
     ul
       li
-        code http://graph.pirati.cz/user/USERNAME
+        code #{base}/user/USERNAME
       li
-        code http://graph.pirati.cz/group/USERNAME
+        code #{base}/group/USERNAME
 
   p User-group relations can be gathered like this:
     ul
       li
-        code http://graph.pirati.cz/user/USERNAME/groups
+        code #{base}/user/USERNAME/groups
       li
-        code http://graph.pirati.cz/ID/groups
+        code #{base}/ID/groups
       li
-        code http://graph.pirati.cz/group/USERNAME/members
+        code #{base}/group/USERNAME/members
       li
-        code http://graph.pirati.cz/ID/members
+        code #{base}/ID/members
 

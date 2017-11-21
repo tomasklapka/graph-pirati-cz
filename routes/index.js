@@ -1,8 +1,4 @@
-
-/*
- * GET home page.
- */
-
-exports.index = function(req, res){
-  res.render('index', { title: 'Graph API for pirati.cz' });
+exports.index = function (req, res) {
+  const base = req.protocol + '://' + req.get('host');
+  res.render('index', { title: 'Graph API for ' + base, base: base });
 };
