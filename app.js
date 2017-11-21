@@ -14,7 +14,7 @@ const express = require('express'),
     routes = require('./routes'),
     user = require('./routes/user'),
     group = require('./routes/group'),
-    path = require('path'),
+    join = require('path').join,
     favicon = require('serve-favicon'),
     logger = require('morgan'),
     bodyParser = require('body-parser');
@@ -22,14 +22,16 @@ const express = require('express'),
 const app = express();
 
 app.set('sources', sources);
+app.set('base', 'https://graph.pirati.cz');
+//app.set('sameAsBase', 'https://graph.pirati.info');
 app.set('port', process.env.PORT || 3042);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'pug');
 app.enable('trust proxy');
-app.use(favicon(path.join(__dirname, 'public/favicon.ico')));
+app.use(favicon(join(__dirname, 'public/favicon.ico')));
 app.use(logger('dev'));
 app.set('json spaces', 2);
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(join(__dirname, 'public')));
 app.use(bodyParser.json())
 
 app.get('/', routes.index);

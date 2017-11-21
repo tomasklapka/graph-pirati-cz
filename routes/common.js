@@ -1,8 +1,10 @@
 "use strict";
 
 const debug = require('debug')('routes/common');
-const cacheRequest = require('../control/cache/cache').cacheRequest;
 const tryEach = require('async/tryEach');
+
+const cacheRequest = require('../control/cache/cache').cacheRequest;
+const view = require('../views/view');
 
 const controls = {
     'user': {},
@@ -26,7 +28,7 @@ module.exports.fallThrough = function (collection, req, resultCallback, controlC
     tryEach(tasks, resultCallback);
 };
 
-module.exports.getResultCallback = function (collection, method, parameter, res, next) {
+module.exports.getResultCallback = function (collection, method, parameter, req, res, next) {
     return function (err, result) {
         debug('result callback err: ' + err);
         if (err) {
@@ -42,8 +44,9 @@ module.exports.getResultCallback = function (collection, method, parameter, res,
             if (next) {
                 next(res, err, result);
             } else {
-                res.json(result);
+                view(collection, method, req, res, result);
             }
         });
     }
 };
+
