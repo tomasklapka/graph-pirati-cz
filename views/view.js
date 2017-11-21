@@ -34,9 +34,10 @@ function renameAndAddProperties(target, obj) {
 function convertToJsonLd (base, sameAsBase, url, data, collection, method) {
     const isArray = Array.isArray(data);
     if (!isArray) {
-        data = [ data ];
+        data = [data];
     }
 
+    const members = [];
     data = data.map(function (sourceObj) {
         const username = encodeURIComponent(sourceObj['username']);
         const obj = {};
@@ -62,14 +63,28 @@ function convertToJsonLd (base, sameAsBase, url, data, collection, method) {
                 break;
             case 'getGroups':
                 setId('/group/' + username, 'vcard:Group');
+                obj['vcard:hasMember'] = base + url.replace('/groups', '#this');
                 break;
             case 'getMembers':
                 setId('/user/' + username, 'vcard:Individual');
+                members.push(base + '/user/' + username + '#this');
                 break;
         };
 
         return renameAndAddProperties(obj, sourceObj);
     });
+    if (members.length > 0) {
+        const groupUrl = url.replace('/members', '#this');
+        const groupObject = {
+            '@id': base + groupUrl,
+        };
+        if (sameAsBase) {
+            groupObject['owl:sameAs'] = sameAsBase + groupUrl;
+        }
+        groupObject['@type'] = 'vcard:Group';
+        groupObject['vcard:hasMember'] = members;
+        data.unshift(groupObject)
+    }
     const ldjson = {
         "@context": context,
         "@graph": data
