@@ -2,30 +2,26 @@
 
 const debug = require('debug')('views/view');
 
-function renameKeys(obj) {
+const propertyMapping = {
+    'id':       'vcard:hasUID',
+    'fullname': 'vcard:fn',
+    'username': 'pirg:username',
+    'type':     'pirg:type',
+    'email':    'pirg:email',
+    'rank':     'pirg:rank',
+    'user_id':  'pirbb:user_id',
+    'language': 'pirbb:user_lang',
+    'address':  'pirbb:user_from',
+    'about':    'pirbb:group_desc',
+    'display':  'pirbb:group_display',
+    'colour':   'pirbb:group_colour',
+}
+
+function renameProperties(obj) {
     const clone = {};
     for (const property in obj) {
         if (obj.hasOwnProperty(property)) {
-            let newP;
-            switch (property) {
-                case 'id': newP = 'vcard:hasUID'; break;
-                case 'fullname': newP = 'vcard:fn'; break;
-
-                case 'username': newP = 'pirg:username'; break;
-                case 'type': newP = 'pirg:type'; break;
-                case 'email': newP = 'pirg:email'; break;
-                case 'rank': newP = 'pirg:rank'; break;
-
-                case 'user_id': newP = 'pirbb:user_id'; break;
-                case 'language': newP = 'pirbb:user_lang'; break;
-                case 'address': newP = 'pirbb:user_from'; break;
-                case 'about': newP = 'pirbb:group_desc'; break;
-                case 'display': newP = 'pirbb:group_display'; break;
-                case 'colour': newP = 'pirbb:group_colour'; break;
-                default:
-                    newP = property;
-            }
-            clone[newP] = obj[property];
+            clone[propertyMapping[property] || property] = obj[property];
         }
     }
     return clone;
@@ -39,7 +35,8 @@ function convertToJsonLd (base, sameAsBase, url, data, collection, method) {
 
     data = data.map(function (sourceObj) {
         const username = encodeURIComponent(sourceObj['username']);
-        const obj = renameKeys(sourceObj);
+        const obj = renameProperties(sourceObj);
+
         obj['@id'] = base;
         if (collection === 'group') {
             obj['@type'] = 'vcard:Group';
