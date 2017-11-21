@@ -23,7 +23,7 @@ const app = express();
 
 app.set('sources', sources);
 app.set('base', 'https://graph.pirati.cz');
-//app.set('sameAsBase', 'https://graph.pirati.info');
+app.set('sameAsBase', 'https://graph.pirati.info');
 app.set('port', process.env.PORT || 3042);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'pug');

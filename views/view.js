@@ -2,6 +2,11 @@
 
 const debug = require('debug')('views/view');
 
+const context = {
+    "vcard": "http://www.w3.org/2006/vcard/ns#",
+    "pirg": "https://ns.pirati.info/graph#",
+    "pirbb": "https://ns.pirati.info/phpBB#",
+};
 const propertyMapping = {
     'id':       'vcard:hasUID',
     'fullname': 'vcard:fn',
@@ -17,14 +22,13 @@ const propertyMapping = {
     'colour':   'pirbb:group_colour',
 }
 
-function renameProperties(obj) {
-    const clone = {};
+function renameAndAddProperties(target, obj) {
     for (const property in obj) {
         if (obj.hasOwnProperty(property)) {
-            clone[propertyMapping[property] || property] = obj[property];
+            target[propertyMapping[property] || property] = obj[property];
         }
     }
-    return clone;
+    return target;
 }
 
 function convertToJsonLd (base, sameAsBase, url, data, collection, method) {
@@ -35,48 +39,39 @@ function convertToJsonLd (base, sameAsBase, url, data, collection, method) {
 
     data = data.map(function (sourceObj) {
         const username = encodeURIComponent(sourceObj['username']);
-        const obj = renameProperties(sourceObj);
+        const obj = {};
 
         obj['@id'] = base;
-        if (collection === 'group') {
-            obj['@type'] = 'vcard:Group';
-        } else {
-            obj['@type'] = 'vcard:Individual';
-        }
 
-        function setId(url) {
+        function setId(url, type) {
             url += '#this';
             obj['@id'] += url;
             if (sameAsBase) {
                 obj['owl:sameAs'] = sameAsBase + url;
             }
+            obj['@type'] = type;
         }
 
         switch (method) {
             case 'getById':
             case 'getByName':
-                setId(url);
+                setId(url, (collection === 'group') ? 'vcard:Group' : 'vcard:User');
                 break;
             case 'list':
-                setId('/' + collection + '/' + username);
+                setId('/' + collection + '/' + username, (collection === 'group') ? 'vcard:Group' : 'vcard:User');
                 break;
             case 'getGroups':
-                setId('/group/' + username);
-                obj['@type'] = 'vcard:Group';
+                setId('/group/' + username, 'vcard:Group');
                 break;
             case 'getMembers':
-                setId('/user/' + username);
-                obj['@type'] = 'vcard:Individual';
+                setId('/user/' + username, 'vcard:Individual');
                 break;
         };
-        return obj
+
+        return renameAndAddProperties(obj, sourceObj);
     });
     const ldjson = {
-        "@context": {
-            "vcard": "http://www.w3.org/2006/vcard/ns#",
-            "pirg": "https://ns.pirati.info/graph#",
-            "pirbb": "https://ns.pirati.info/phpBB#",
-        },
+        "@context": context,
         "@graph": data
     };
     if (sameAsBase) {
