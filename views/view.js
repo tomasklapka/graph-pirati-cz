@@ -56,7 +56,7 @@ function convertToJsonLd (base, sameAsBase, url, data, collection, method) {
         switch (method) {
             case 'getById':
             case 'getByName':
-                setId(url, (collection === 'group') ? 'vcard:Group' : 'vcard:User');
+                setId(url, (collection === 'group') ? 'vcard:Group' : 'vcard:Individual');
                 break;
             case 'list':
                 setId('/' + collection + '/' + username, (collection === 'group') ? 'vcard:Group' : 'vcard:User');
