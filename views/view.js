@@ -3,9 +3,9 @@
 const debug = require('debug')('views/view');
 
 const context = {
-    "vcard": "http://www.w3.org/2006/vcard/ns#",
-    "pirg": "https://ns.pirati.info/graph#",
-    "pirbb": "https://ns.pirati.info/phpBB#",
+    'vcard': "http://www.w3.org/2006/vcard/ns#",
+    'pirg': "https://ns.pirati.info/graph#",
+    'pirbb': "https://ns.pirati.info/phpBB#",
 };
 const propertyMapping = {
     'id':       'vcard:hasUID',
@@ -95,20 +95,45 @@ function convertToJsonLd (base, sameAsBase, url, data, collection, method) {
     return ldjson;
 }
 
+function convert(data, targetMime, base, callback) {
+
+    const $rdf = require('rdflib');
+    const kb = new $rdf.IndexedFormula();
+
+    $rdf.parse(data, kb, 'users', 'application/ld+json', function (err, kb) {
+        if (err) {
+            debug(err);
+            callback(err);
+        }
+        $rdf.serialize(undefined, kb, base, targetMime, callback);
+    });
+}
+
 module.exports = function (collection, method, req, res, data) {
-    const accepted = req.accepts('application/json', 'application/ld+json');
-    debug(accepted);
+    var accepted = req.query.accept || req.accepts('application/json', 'application/ld+json');
+    accepted = accepted.replace(' ', '+'); // allows using + in query parameter instead of %2B
     if (accepted !== 'application/json') {
         const base = req.app.get('base') || req.protocol + '://' + req.get('host');
         data = convertToJsonLd(base, req.app.get('sameAsBase'), req.originalUrl, data, collection, method);
         if (accepted === 'application/ld+json') {
+            debug('Returning "application/ld+json"');
             res.header('Content-type', accepted);
             res.send(data);
             return;
         }
-        // TODO: res.send(convertToAnotherRdfFormat(data)); return;
-        // or fallback to json for now
+        debug('Converting to and returning "%s"', accepted);
+        data = JSON.stringify(data);
+        convert(data, accepted, base, function (err, data) {
+            if (err) {
+                debug(err);
+                res.status(500).send(err);
+                return;
+            }
+            res.header('Content-type', accepted);
+            res.send(data);
+        });
+        return;
     }
-    // failback to json
+    debug('Returning "application/json", Accepted "%s"', accepted);
     res.json(data);
-}
+};
